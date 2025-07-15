@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*'  # 触发条件：推送以 'v' 开头的标签 (如 v0.01, v1.0.0)
 
+permissions:
+  contents: write  # 允许创建release和上传文件
+
 jobs:
   build:
     name: Build and Release
@@ -72,53 +75,45 @@ jobs:
         sha256sum * > checksums.txt
         cd ..
         
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ steps.version.outputs.VERSION }}
-        release_name: Release ${{ steps.version.outputs.VERSION }}
-        body: |
-          ## Dirsearch-Go ${{ steps.version.outputs.VERSION }}
-          
-          高性能目录扫描工具 - 新版本发布
-          
-          ### 下载说明
-          
-          请根据您的操作系统选择对应的二进制文件：
-          
-          - **Windows**: `dirsearch-go-${{ steps.version.outputs.VERSION }}-windows-amd64.zip` (64位) 或 `dirsearch-go-${{ steps.version.outputs.VERSION }}-windows-386.zip` (32位)
-          - **Linux**: `dirsearch-go-${{ steps.version.outputs.VERSION }}-linux-amd64.tar.gz` (64位) 或 `dirsearch-go-${{ steps.version.outputs.VERSION }}-linux-386.tar.gz` (32位)
-          - **macOS**: `dirsearch-go-${{ steps.version.outputs.VERSION }}-darwin-amd64.tar.gz` (Intel) 或 `dirsearch-go-${{ steps.version.outputs.VERSION }}-darwin-arm64.tar.gz` (Apple Silicon)
-          
-          ### 安装方法
-          
-          1. 下载对应平台的压缩包
-          2. 解压缩文件
-          3. 将可执行文件放到PATH环境变量中的目录
-          4. 运行 `dirsearch-go -h` 查看帮助信息
-          
-          ### 校验文件完整性
-          
-          下载 `checksums.txt` 文件，使用以下命令验证文件完整性：
-          ```bash
-          sha256sum -c checksums.txt
-          ```
-          
-          ---
-          
-          **完整更新日志请查看**: [CHANGELOG.md](https://github.com/KPF888/dirsearch-go/blob/main/README.md#更新日志)
-        draft: false
-        prerelease: false
-        
-    - name: Upload Release Assets
+    - name: Create Release and Upload Assets
       run: |
-        # 上传所有构建的文件
-        for file in dist/*; do
-          echo "Uploading $file..."
-          gh release upload ${{ steps.version.outputs.VERSION }} "$file"
-        done
+        # 创建release说明
+        cat > release_notes.md << 'EOF'
+        ## Dirsearch-Go ${{ steps.version.outputs.VERSION }}
+
+        高性能目录扫描工具 - 新版本发布
+
+        ### 下载说明
+
+        请根据您的操作系统选择对应的二进制文件：
+
+        - **Windows**: `dirsearch-go-${{ steps.version.outputs.VERSION }}-windows-amd64.zip` (64位) 或 `dirsearch-go-${{ steps.version.outputs.VERSION }}-windows-386.zip` (32位)
+        - **Linux**: `dirsearch-go-${{ steps.version.outputs.VERSION }}-linux-amd64.tar.gz` (64位) 或 `dirsearch-go-${{ steps.version.outputs.VERSION }}-linux-386.tar.gz` (32位)
+        - **macOS**: `dirsearch-go-${{ steps.version.outputs.VERSION }}-darwin-amd64.tar.gz` (Intel) 或 `dirsearch-go-${{ steps.version.outputs.VERSION }}-darwin-arm64.tar.gz` (Apple Silicon)
+
+        ### 安装方法
+
+        1. 下载对应平台的压缩包
+        2. 解压缩文件
+        3. 将可执行文件放到PATH环境变量中的目录
+        4. 运行 `dirsearch-go -h` 查看帮助信息
+
+        ### 校验文件完整性
+
+        下载 `checksums.txt` 文件，使用以下命令验证文件完整性：
+        ```bash
+        sha256sum -c checksums.txt
+        ```
+
+        ---
+
+        **完整更新日志请查看**: [README.md](https://github.com/KPF888/dirsearch-go/blob/main/README.md#更新日志)
+        EOF
+
+        # 创建release并上传所有文件
+        gh release create ${{ steps.version.outputs.VERSION }} \
+          --title "Release ${{ steps.version.outputs.VERSION }}" \
+          --notes-file release_notes.md \
+          dist/*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
