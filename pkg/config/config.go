@@ -98,7 +98,7 @@ func DefaultConfig() *Config {
 	return &Config{
 		Threads:   20,
 		Timeout:   Duration(10 * time.Second),
-		UserAgent: "dirsearch-go/2.0",
+		UserAgent: "dirsearch-go/0.01",
 		Wordlist:  "dicc.txt",
 		Output: OutputConfig{
 			Format:     "console",
@@ -266,7 +266,7 @@ func PrintUsage() {
   -depth int         递归最大深度 (默认: 3)
   -retry int         重试次数 (默认: 3)
   -retry-delay duration  重试延迟 (默认: 1s)
-  -user-agent string 用户代理 (默认: dirsearch-go/2.0)
+  -user-agent string 用户代理 (默认: dirsearch-go/0.01)
   -rate-limit        启用速率限制
   -rps int           每秒请求数 (默认: 10)
   -e string          要测试的文件扩展名列表 (逗号分隔)
@@ -292,6 +292,6 @@ func PrintUsage() {
   # 启用速率限制
   %s -u https://example.com -rate-limit -rps 5
 
-更多信息请访问: https://github.com/your-repo/dirsearch-go
+更多信息请访问: https://github.com/KPF888/dirsearch-go
 `, os.Args[0], os.Args[0], os.Args[0], os.Args[0], os.Args[0], os.Args[0], os.Args[0])
 }

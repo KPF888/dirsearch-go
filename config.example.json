@@ -34,7 +34,7 @@
   "headers": {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
   },
-  "user_agent": "dirsearch-go/2.0",
+  "user_agent": "dirsearch-go/0.01",
   "recursive": false,
   "max_depth": 3,
   "retry_count": 3,

@@ -29,7 +29,7 @@ go build -o dirsearch-go cmd/
 ```
 
 ### 使用预编译二进制文件
-从[Releases](releases)页面下载适合您平台的预编译二进制文件。
+从[Releases](https://github.com/KPF888/dirsearch-go/releases)页面下载适合您平台的预编译二进制文件。
 
 ## 使用方法
 
@@ -67,7 +67,7 @@ go build -o dirsearch-go cmd/
 -depth int         递归最大深度 (默认: 3)
 -retry int         重试次数 (默认: 3)
 -retry-delay duration  重试延迟 (默认: 1s)
--user-agent string 用户代理 (默认: dirsearch-go/2.0)
+-user-agent string 用户代理 (默认: dirsearch-go/0.01)
 -rate-limit        启用速率限制
 -rps int           每秒请求数 (默认: 10)
 -config string     配置文件路径
@@ -240,21 +240,25 @@ api
 
 ## 许可证
 
-本项目采用MIT许可证。详情请参阅[LICENSE](LICENSE)文件。
+本项目采用MIT许可证。详情请参阅[LICENSE](https://github.com/KPF888/dirsearch-go/blob/main/LICENSE)文件。
+
+## 项目地址
+
+🔗 **GitHub仓库**: https://github.com/KPF888/dirsearch-go
 
 ## 更新日志
 
-### v2.0.0
-- 完全重构代码架构
-- 添加配置文件支持
-- 实现多种输出格式
-- 添加递归扫描功能
-- 实现高级过滤系统
-- 添加速率限制功能
-- 改进错误处理和日志记录
-
-### v1.0.0
-- 初始版本
-- 基本目录扫描功能
-- 多线程支持
-- 进度条显示
+### v0.01 (2025-01-15)
+- 🎉 初始发布版本
+- ✅ 高性能多线程并发扫描
+- ✅ 支持多种输出格式 (控制台、JSON、CSV)
+- ✅ 灵活的配置文件支持
+- ✅ 请求重试机制和优雅停止
+- ✅ 递归扫描功能
+- ✅ 智能过滤系统
+- ✅ 响应内容过滤 (正则表达式、关键词、大小)
+- ✅ 速率限制避免被封禁
+- ✅ 详细日志记录
+- ✅ 自定义HTTP头和用户代理
+- ✅ SSL证书验证跳过
+- ✅ 进度条显示

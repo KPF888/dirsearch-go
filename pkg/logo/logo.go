@@ -57,7 +57,7 @@ func DisplayFull() {
 		{"    ╚═════╝ ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝      ╚═════╝  ╚═════╝ ", darkBlue},
 		{"", nil},
 		{"                           High-Performance Directory Scanner", navy},
-		{"                                    Version 2.0", navy},
+		{"                                    Version 0.01", navy},
 		{"", nil},
 	}
 
@@ -93,7 +93,7 @@ func DisplaySimple() {
 		{"  ║           DIRSEARCH-GO               ║", mediumBlue},
 		{"  ║                                      ║", lightBlue},
 		{"  ║    High-Performance Directory        ║", darkBlue},
-		{"  ║           Scanner v2.0               ║", darkBlue},
+		{"  ║           Scanner v0.01              ║", darkBlue},
 		{"  ║                                      ║", lightBlue},
 		{"  ╚══════════════════════════════════════╝", lightBlue},
 		{"", nil},
@@ -121,6 +121,6 @@ func DisplayCompact() {
 	lightBlue.Print("DIRSEARCH-GO")
 	lightBlue.Print(" ▓▓▓")
 	fmt.Print("  ")
-	darkBlue.Println("v2.0 - Directory Scanner")
+	darkBlue.Println("v0.01 - Directory Scanner")
 	fmt.Print("\n")
 }
