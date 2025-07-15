@@ -1,0 +1,124 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # 触发条件：推送以 'v' 开头的标签 (如 v0.01, v1.0.0)
+
+jobs:
+  build:
+    name: Build and Release
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'  # 使用Go 1.21版本
+        
+    - name: Get version from tag
+      id: version
+      run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+      
+    - name: Build binaries
+      run: |
+        # 创建构建目录
+        mkdir -p dist
+        
+        # 定义构建目标平台
+        platforms=(
+          "windows/amd64"
+          "windows/386"
+          "linux/amd64"
+          "linux/386"
+          "linux/arm64"
+          "darwin/amd64"
+          "darwin/arm64"
+        )
+        
+        # 为每个平台构建二进制文件
+        for platform in "${platforms[@]}"; do
+          platform_split=(${platform//\// })
+          GOOS=${platform_split[0]}
+          GOARCH=${platform_split[1]}
+          
+          output_name="dirsearch-go-${{ steps.version.outputs.VERSION }}-${GOOS}-${GOARCH}"
+          
+          if [ $GOOS = "windows" ]; then
+            output_name+='.exe'
+          fi
+          
+          echo "Building for $GOOS/$GOARCH..."
+          
+          env GOOS=$GOOS GOARCH=$GOARCH go build \
+            -ldflags="-s -w -X main.version=${{ steps.version.outputs.VERSION }}" \
+            -o dist/$output_name \
+            ./cmd/
+            
+          # 创建压缩包
+          if [ $GOOS = "windows" ]; then
+            cd dist && zip "${output_name%.exe}.zip" "$output_name" && cd ..
+          else
+            cd dist && tar -czf "${output_name}.tar.gz" "$output_name" && cd ..
+          fi
+        done
+        
+    - name: Generate checksums
+      run: |
+        cd dist
+        sha256sum * > checksums.txt
+        cd ..
+        
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.version.outputs.VERSION }}
+        release_name: Release ${{ steps.version.outputs.VERSION }}
+        body: |
+          ## Dirsearch-Go ${{ steps.version.outputs.VERSION }}
+          
+          高性能目录扫描工具 - 新版本发布
+          
+          ### 下载说明
+          
+          请根据您的操作系统选择对应的二进制文件：
+          
+          - **Windows**: `dirsearch-go-${{ steps.version.outputs.VERSION }}-windows-amd64.zip` (64位) 或 `dirsearch-go-${{ steps.version.outputs.VERSION }}-windows-386.zip` (32位)
+          - **Linux**: `dirsearch-go-${{ steps.version.outputs.VERSION }}-linux-amd64.tar.gz` (64位) 或 `dirsearch-go-${{ steps.version.outputs.VERSION }}-linux-386.tar.gz` (32位)
+          - **macOS**: `dirsearch-go-${{ steps.version.outputs.VERSION }}-darwin-amd64.tar.gz` (Intel) 或 `dirsearch-go-${{ steps.version.outputs.VERSION }}-darwin-arm64.tar.gz` (Apple Silicon)
+          
+          ### 安装方法
+          
+          1. 下载对应平台的压缩包
+          2. 解压缩文件
+          3. 将可执行文件放到PATH环境变量中的目录
+          4. 运行 `dirsearch-go -h` 查看帮助信息
+          
+          ### 校验文件完整性
+          
+          下载 `checksums.txt` 文件，使用以下命令验证文件完整性：
+          ```bash
+          sha256sum -c checksums.txt
+          ```
+          
+          ---
+          
+          **完整更新日志请查看**: [CHANGELOG.md](https://github.com/KPF888/dirsearch-go/blob/main/README.md#更新日志)
+        draft: false
+        prerelease: false
+        
+    - name: Upload Release Assets
+      run: |
+        # 上传所有构建的文件
+        for file in dist/*; do
+          echo "Uploading $file..."
+          gh release upload ${{ steps.version.outputs.VERSION }} "$file"
+        done
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

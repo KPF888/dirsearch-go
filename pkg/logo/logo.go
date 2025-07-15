@@ -8,6 +8,9 @@ import (
 	"golang.org/x/term"
 )
 
+// Version 当前版本，可以在main包中设置
+var Version = "v0.01"
+
 // getTerminalWidth returns the terminal width, defaulting to 80 if unable to detect
 func getTerminalWidth() int {
 	width, _, err := term.GetSize(int(os.Stdout.Fd()))
@@ -57,7 +60,7 @@ func DisplayFull() {
 		{"    ╚═════╝ ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝      ╚═════╝  ╚═════╝ ", darkBlue},
 		{"", nil},
 		{"                           High-Performance Directory Scanner", navy},
-		{"                                    Version 0.01", navy},
+		{"                                    Version " + Version, navy},
 		{"", nil},
 	}
 
@@ -93,7 +96,7 @@ func DisplaySimple() {
 		{"  ║           DIRSEARCH-GO               ║", mediumBlue},
 		{"  ║                                      ║", lightBlue},
 		{"  ║    High-Performance Directory        ║", darkBlue},
-		{"  ║           Scanner v0.01              ║", darkBlue},
+		{"  ║           Scanner " + Version + "              ║", darkBlue},
 		{"  ║                                      ║", lightBlue},
 		{"  ╚══════════════════════════════════════╝", lightBlue},
 		{"", nil},
@@ -121,6 +124,6 @@ func DisplayCompact() {
 	lightBlue.Print("DIRSEARCH-GO")
 	lightBlue.Print(" ▓▓▓")
 	fmt.Print("  ")
-	darkBlue.Println("v0.01 - Directory Scanner")
+	darkBlue.Println(Version + " - Directory Scanner")
 	fmt.Print("\n")
 }

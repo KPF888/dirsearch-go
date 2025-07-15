@@ -20,6 +20,9 @@ import (
 	"github.com/schollz/progressbar/v3"
 )
 
+// 版本信息，会在构建时通过 -ldflags 注入
+var version = "v0.01"
+
 // 为输出通道定义消息类型
 type progressIncrement int
 type progressMaxChange int
@@ -446,6 +449,9 @@ func (a *App) Close() {
 }
 
 func main() {
+	// 设置logo版本信息
+	logo.Version = version
+
 	// Display startup logo
 	logo.Display()
 
