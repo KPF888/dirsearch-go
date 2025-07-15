@@ -1,0 +1,42 @@
+{
+  "target": "http://example.com",
+  "wordlist": "dicc.txt",
+  "threads": 20,
+  "timeout": "10s",
+  "output": {
+    "format": "console",
+    "file": "",
+    "verbose": false,
+    "show_errors": false
+  },
+  "scanner": {
+    "methods": ["GET"],
+    "extensions": [],
+    "skip_ssl_verify": true,
+    "follow_redirects": false,
+    "max_redirects": 3
+  },
+  "rate_limit": {
+    "enabled": false,
+    "requests_per_second": 10,
+    "delay": "0s"
+  },
+  "filters": {
+    "status_codes": [],
+    "exclude_status": [404, 400],
+    "min_size": 0,
+    "max_size": 0,
+    "include_regex": "",
+    "exclude_regex": "",
+    "include_words": [],
+    "exclude_words": []
+  },
+  "headers": {
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+  },
+  "user_agent": "dirsearch-go/2.0",
+  "recursive": false,
+  "max_depth": 3,
+  "retry_count": 3,
+  "retry_delay": "1s"
+}
